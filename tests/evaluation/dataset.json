@@ -1,0 +1,60 @@
+
+[
+  {
+    "id": "rag_001",
+    "message": "退款审核通过后多久可以到账？",
+    "expected_type": "rag",
+    "required_keywords": [
+      "3-7个工作日"
+    ]
+  },
+  {
+    "id": "rag_002",
+    "message": "支付宝退款多久到账？",
+    "expected_type": "rag",
+    "required_keywords": [
+      "支付宝",
+      "3-7个工作日"
+    ]
+  },
+  {
+    "id": "rag_003",
+    "message": "退款申请怎么操作？",
+    "expected_type": "rag",
+    "required_keywords": [
+      "订单页面",
+      "退款申请"
+    ]
+  },
+  {
+    "id": "rag_004",
+    "message": "哪些商品不支持无理由退款？",
+    "expected_type": "rag",
+    "required_keywords": [
+      "特殊商品"
+    ]
+  },
+  {
+    "id": "tool_001",
+    "message": "帮我查询订单12345",
+    "expected_type": "tool",
+    "expected_tool": "get_order_status"
+  },
+  {
+    "id": "tool_002",
+    "message": "帮我查询订单12345的退款状态",
+    "expected_type": "tool",
+    "expected_tool": "get_refund_status"
+  },
+  {
+    "id": "tool_003",
+    "message": "帮我查询订单99999",
+    "expected_type": "tool",
+    "expected_tool": "get_order_status"
+  },
+  {
+    "id": "unknown_001",
+    "message": "公司附近有什么咖啡店？",
+    "expected_type": "unknown"
+  }
+]
