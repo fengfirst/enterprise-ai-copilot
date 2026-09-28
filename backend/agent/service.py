@@ -4,6 +4,7 @@ from backend.core.llm import chat
 from backend.rag.service import search_knowledge
 from backend.tools.order import get_order_status
 from backend.tools.refund import get_refund_status
+from backend.agent.decision import decide
 
 
 SYSTEM_PROMPT = """
@@ -26,51 +27,22 @@ def extract_order_id(message: str) -> str | None:
 
     return match.group(0)
 
-def is_refund_query(message: str) -> bool:
-    refund_keywords = [
-        "退款状态",
-        "退款进度",
-        "退款记录",
-        # "退款申请",
-        # "退款审核",
-    ]
-
-    return any(
-        keyword in message
-        for keyword in refund_keywords
-    )
-
-
 def handle_message(message: str) -> dict:
+    decision = decide(message)
+
+    request_type = decision["request_type"]
+    needs_knowledge_base = decision["needs_knowledge_base"]
+
     order_id = extract_order_id(message)
 
-    if order_id and is_refund_query(message):
-        result = get_refund_status(order_id)
-
-        if not result["success"]:
+    # 1. 查询订单
+    if request_type == "order_status":
+        if not order_id:
             return {
-                "type": "tool",
-                "answer": result["error"],
-                "tool": "get_refund_status",
+                "type": "unknown",
+                "answer": "请提供需要查询的订单号。",
             }
 
-        answer = chat(
-            system_prompt=SYSTEM_PROMPT,
-            user_message=(
-                f"用户问题：{message}\n\n"
-                f"退款数据：{result['data']}"
-            ),
-        )
-
-        return {
-            "type": "tool",
-            "answer": answer,
-            "tool": "get_refund_status",
-            "data": result["data"],
-        }
-
-
-    if order_id and "订单" in message:
         result = get_order_status(order_id)
 
         if not result["success"]:
@@ -95,34 +67,72 @@ def handle_message(message: str) -> dict:
             "data": result["data"],
         }
 
-    knowledge = search_knowledge(message)
+    # 2. 查询退款状态
+    if request_type == "refund_status":
+        if not order_id:
+            return {
+                "type": "unknown",
+                "answer": "请提供需要查询退款状态的订单号。",
+            }
 
-    if knowledge["found"]:
-        context_parts = []
+        result = get_refund_status(order_id)
 
-        for item in knowledge["results"]:
-            context_parts.append(
-                f"来源：{item['metadata']['source']}\n"
-                f"内容：{item['content']}"
-            )
-
-        context = "\n\n".join(context_parts)
+        if not result["success"]:
+            return {
+                "type": "tool",
+                "answer": result["error"],
+                "tool": "get_refund_status",
+            }
 
         answer = chat(
             system_prompt=SYSTEM_PROMPT,
             user_message=(
                 f"用户问题：{message}\n\n"
-                f"检索到的知识库证据：\n"
-                f"{context}"
+                f"退款数据：{result['data']}"
             ),
         )
 
         return {
-            "type": "rag",
+            "type": "tool",
             "answer": answer,
-            "results": knowledge["results"],
+            "tool": "get_refund_status",
+            "data": result["data"],
         }
 
+    # 3. 企业知识库问题
+    if (
+        request_type == "knowledge"
+        or needs_knowledge_base >= 0.8
+    ):
+        knowledge = search_knowledge(message)
+
+        if knowledge["found"]:
+            context_parts = []
+
+            for item in knowledge["results"]:
+                context_parts.append(
+                    f"来源：{item['metadata']['source']}\n"
+                    f"内容：{item['content']}"
+                )
+
+            context = "\n\n".join(context_parts)
+
+            answer = chat(
+                system_prompt=SYSTEM_PROMPT,
+                user_message=(
+                    f"用户问题：{message}\n\n"
+                    f"检索到的知识库证据：\n"
+                    f"{context}"
+                ),
+            )
+
+            return {
+                "type": "rag",
+                "answer": answer,
+                "results": knowledge["results"],
+            }
+
+    # 4. 无法处理
     return {
         "type": "unknown",
         "answer": (
