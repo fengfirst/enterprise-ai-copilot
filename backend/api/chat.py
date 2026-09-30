@@ -2,11 +2,11 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from backend.agent.service import handle_message
-from backend.session.store import InMemorySessionStore
+from backend.session.postgres_store import PostgreSQLSessionStore
 
 router = APIRouter()
 
-session_store = InMemorySessionStore()
+session_store = PostgreSQLSessionStore()
 
 
 class ChatRequest(BaseModel):

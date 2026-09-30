@@ -9,6 +9,7 @@ dependencies = [
     "fastapi>=0.141.1",
     "fastembed>=0.7.4",
     "openai>=3.19.2",
+    "psycopg[binary]>=3.3.6",
     "python-dotenv>=1.2.3",
     "typesafe-sdk>=0.7.2",
     "uvicorn>=0.54.0",
