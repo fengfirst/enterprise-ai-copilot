@@ -27,13 +27,58 @@ def extract_order_id(message: str) -> str | None:
 
     return match.group(0)
 
-def handle_message(message: str) -> dict:
+
+def format_history(history: list) -> str:
+    if not history:
+        return ""
+
+    lines = []
+
+    for message in history:
+        lines.append(
+            f"{message.role}: {message.content}"
+        )
+
+    return "\n".join(lines)
+
+def handle_message(
+    message: str,
+    history: list | None = None,
+    context: dict | None = None,
+) -> dict:
+    history = history or []
+    history_text = format_history(history)
+    context = context or {}
+
     decision = decide(message)
 
     request_type = decision["request_type"]
     needs_knowledge_base = decision["needs_knowledge_base"]
 
+    # 如果当前消息没有明确意图，但会话已有订单上下文，
+    # 则识别常见的订单跟进问法。
+    if (
+        request_type == "unknown"
+        and context.get("current_order_id")
+        and any(
+            keyword in message
+            for keyword in [
+                "它什么时候到",
+                "什么时候到",
+                "什么时候送到",
+                "物流到哪",
+                "物流状态",
+                "到哪了",
+                "订单状态",
+            ]
+        )
+    ):
+        request_type = "order_status"
+
     order_id = extract_order_id(message)
+
+    if not order_id:
+        order_id = context.get("current_order_id")
 
     # 1. 查询订单
     if request_type == "order_status":
@@ -51,20 +96,25 @@ def handle_message(message: str) -> dict:
                 "answer": result["error"],
                 "tool": "get_order_status",
             }
-
+            
         answer = chat(
             system_prompt=SYSTEM_PROMPT,
             user_message=(
-                f"用户问题：{message}\n\n"
+                f"历史对话：\n{history_text}\n\n"
+                f"用户当前问题：{message}\n\n"
                 f"订单数据：{result['data']}"
             ),
         )
+        
 
         return {
             "type": "tool",
             "answer": answer,
             "tool": "get_order_status",
             "data": result["data"],
+            "context": {
+                "current_order_id": order_id,
+            },
         }
 
     # 2. 查询退款状态
@@ -87,7 +137,8 @@ def handle_message(message: str) -> dict:
         answer = chat(
             system_prompt=SYSTEM_PROMPT,
             user_message=(
-                f"用户问题：{message}\n\n"
+                f"历史对话：\n{history_text}\n\n"
+                f"用户当前问题：{message}\n\n"
                 f"退款数据：{result['data']}"
             ),
         )
@@ -115,14 +166,15 @@ def handle_message(message: str) -> dict:
                     f"内容：{item['content']}"
                 )
 
-            context = "\n\n".join(context_parts)
+            knowledge_context = "\n\n".join(context_parts)
 
             answer = chat(
                 system_prompt=SYSTEM_PROMPT,
                 user_message=(
-                    f"用户问题：{message}\n\n"
+                    f"历史对话：\n{history_text}\n\n"
+                    f"用户当前问题：{message}\n\n"
                     f"检索到的知识库证据：\n"
-                    f"{context}"
+                    f"{knowledge_context}"
                 ),
             )
 
