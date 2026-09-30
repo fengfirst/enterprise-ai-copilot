@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 
 from backend.api.chat import router as chat_router
+from backend.core.logging import setup_logging
+
+
+setup_logging()
+
 
 app = FastAPI(
     title="Enterprise AI Copilot",

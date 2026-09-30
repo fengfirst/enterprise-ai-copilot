@@ -1,4 +1,5 @@
 import re
+import logging
 
 from backend.core.llm import chat
 from backend.rag.service import search_knowledge
@@ -6,6 +7,7 @@ from backend.tools.order import get_order_status
 from backend.tools.refund import get_refund_status
 from backend.agent.decision import decide
 
+logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """
 你是企业 AI 客服助手。
@@ -55,6 +57,12 @@ def handle_message(
     request_type = decision["request_type"]
     needs_knowledge_base = decision["needs_knowledge_base"]
 
+    logger.info(
+        "[AGENT] decision request_type=%s needs_knowledge_base=%.2f",
+        request_type,
+        needs_knowledge_base,
+    )
+
     # 如果当前消息没有明确意图，但会话已有订单上下文，
     # 则识别常见的订单跟进问法。
     if (
@@ -87,6 +95,11 @@ def handle_message(
                 "type": "unknown",
                 "answer": "请提供需要查询的订单号。",
             }
+
+        logger.info(
+            "[AGENT] tool=get_order_status order_id=%s",
+            order_id,
+        )
 
         result = get_order_status(order_id)
 
@@ -125,6 +138,11 @@ def handle_message(
                 "answer": "请提供需要查询退款状态的订单号。",
             }
 
+        logger.info(
+            "[AGENT] tool=get_refund_status order_id=%s",
+            order_id,
+        )
+
         result = get_refund_status(order_id)
 
         if not result["success"]:
@@ -155,6 +173,8 @@ def handle_message(
         request_type == "knowledge"
         or needs_knowledge_base >= 0.8
     ):
+        logger.info("[AGENT] route=rag")
+
         knowledge = search_knowledge(message)
 
         if knowledge["found"]:
