@@ -10,12 +10,22 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aiuser -d enterprise_ai"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:8
     container_name: enterprise-redis
     ports:
       - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   app:
     build:
@@ -35,8 +45,10 @@ services:
     volumes:
       - ./data/chroma:/app/data/chroma
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   postgres_data:
