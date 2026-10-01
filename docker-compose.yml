@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: enterprise-postgres
+    environment:
+      POSTGRES_USER: aiuser
+      POSTGRES_PASSWORD: aipassword
+      POSTGRES_DB: enterprise_ai
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:8
+    container_name: enterprise-redis
+    ports:
+      - "6380:6379"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: enterprise-ai-copilot
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://aiuser:aipassword@postgres:5432/enterprise_ai
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      TYPESAFE_API_KEY: ${TYPESAFE_API_KEY}
+    volumes:
+      - ./data/chroma:/app/data/chroma
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  postgres_data:
+    external: true
+    name: f06aa3f05a4791c04f66bfe067474c73c16e7a753633a68d09f93136a751cd5b
