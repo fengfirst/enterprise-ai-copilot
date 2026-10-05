@@ -1,327 +1,73 @@
 # Enterprise AI Copilot
 
-> A production-oriented enterprise AI assistant built with **Agent + RAG + Tool Calling + Evaluation + Reliability + Docker**.
+> A production-oriented enterprise AI assistant built with **LLM + Agent + RAG + Tool Calling + Evaluation + Reliability Testing + React + Docker Compose**.
 
-Enterprise AI Copilot 是一个面向企业业务场景的全栈 AI 应用原型。
+Enterprise AI Copilot 是一个面向企业业务场景的全栈 AI 应用，围绕订单查询、退款查询、企业知识库问答等真实业务需求，实现了从 **Agent 路由、工具调用、RAG 检索、上下文管理，到 Evaluation、Reliability Testing、Frontend Demo 和 Docker 化交付**的完整工程链路。
 
-项目不是简单调用 LLM API，而是围绕真实业务问题构建了一条完整的 AI 应用工程链路：
+---
+
+## 项目定位
+
+这个项目不是简单的 LLM Chat Demo，而是一个经过质量验收的企业 AI Copilot。
+
+核心目标：
 
 ```text
-User Request
-     ↓
-React Frontend
-     ↓
-Nginx
-     ↓
-FastAPI
-     ↓
-Agent Routing
- ┌───┼────────────┐
- ↓   ↓            ↓
-Tool RAG       Abstention
- ↓   ↓
-Business Knowledge
-     ↓
-PostgreSQL / Redis / Chroma
+真实业务请求
+      ↓
+Agent Decision
+      ↓
+┌───────────────┬───────────────┬───────────────┐
+│ Order Tool    │ Refund Tool   │ RAG           │
+└───────────────┴───────────────┴───────────────┘
+      ↓
+Grounded / Actionable Answer
+      ↓
+Evaluation + Reliability
+      ↓
+Dockerized Full-stack Application
 ```
 
-当前系统已经完成：
+当前已经完成：
 
-* Agent Routing
+* Agent 路由
 * Tool Calling
-* 企业知识库 RAG
-* Multi-turn Conversation
-* PostgreSQL Session Persistence
-* Redis Cache
+* RAG 知识库问答
+* Session / Context
 * Agent Abstention
-* Evaluation / Quality Gate
+* Evaluation
 * Reliability Testing
-* Observability
-* React Frontend
+* React Chat UI
 * Nginx
-* Docker
-* Docker Compose
-* Secrets Management
-
----
-
-## 1. Project Highlights
-
-### 1.1 Agent + Tool Calling
-
-系统能够根据用户意图选择正确的业务工具。
-
-例如：
-
-```text
-用户：
-帮我查询订单12345的状态
-
-        ↓
-
-Agent Routing
-
-        ↓
-
-get_order_status("12345")
-
-        ↓
-
-业务结果
-```
-
-当前主要业务 Tool：
-
-* `get_order_status`
-* `get_refund_status`
-
-LLM 负责理解和决策，Tool 负责执行确定性的业务逻辑。
-
----
-
-### 1.2 Enterprise RAG
-
-对于企业政策、业务规则等知识型问题，Agent 将请求路由到企业知识库。
-
-```text
-User Query
-    ↓
-Agent
-    ↓
-Embedding
-    ↓
-Vector Search
-    ↓
-Relevant Documents
-    ↓
-LLM
-    ↓
-Grounded Answer
-```
-
-当前技术：
-
+* PostgreSQL
+* Redis
 * Chroma
-* FastEmbed
-* `BAAI/bge-small-zh-v1.5`
-
-示例：
-
-```text
-退款审核通过后一般几天可以到账？
-```
-
-系统能够基于企业退款政策回答：
-
-```text
-退款审核通过后，一般会在 3—7 个工作日内
-按原支付方式原路到账。
-```
-
-同时返回 Knowledge Sources。
-
----
-
-### 1.3 Agent Abstention
-
-系统不会对未知问题强行生成答案。
-
-当知识库没有足够证据、业务 Tool 无法处理请求时，Agent 可以主动拒答：
-
-```text
-Known Business Request
-        ↓
-Tool / RAG
-        ↓
-Answer
-
-Unknown / Unsupported Request
-        ↓
-Abstention
-        ↓
-明确告知无法提供可靠答案
-```
-
-这是项目 Reliability 设计的重要组成部分。
-
----
-
-### 1.4 Evaluation & Quality Gate
-
-项目包含独立 Evaluation Dataset 和自动化评估。
-
-当前 Evaluation：
-
-```text
-24 test cases
-24 passed
-
-Pass Rate: 100%
-```
-
-RAG Grounding：
-
-```text
-10 / 10 grounded
-Grounding Pass Rate: 100%
-```
-
-同时建立了 Quality Gate：
-
-```text
-Evaluation
-    ↓
-Metrics
-    ↓
-Quality Gate
-    ↓
-PASS / FAIL
-```
-
-只有通过质量门禁，系统才认为当前版本满足验收标准。
-
----
-
-### 1.5 Agent Reliability
-
-项目针对 Agent 的实际运行风险增加了 Reliability 测试。
-
-覆盖：
-
-* Tool Exception
-* Invalid Order
-* Redis Failure
-* RAG Failure
-* Knowledge Not Found
-* Agent Abstention
-* Agent Routing
-* Context / Multi-turn Edge Cases
-
-最终测试：
-
-```text
-32 passed
-0 failed
-```
-
----
-
-## 2. Architecture
-
-```text
-                         Browser
-                            │
-                            ▼
-                    ┌──────────────┐
-                    │ React + Vite │
-                    └──────┬───────┘
-                           │
-                           ▼
-                    ┌──────────────┐
-                    │    Nginx     │
-                    │ Static + API │
-                    └──────┬───────┘
-                           │
-                           ▼
-                    ┌──────────────┐
-                    │   FastAPI    │
-                    └──────┬───────┘
-                           │
-                           ▼
-                    ┌──────────────┐
-                    │    Agent     │
-                    └──────┬───────┘
-                           │
-              ┌────────────┼────────────┐
-              │            │            │
-              ▼            ▼            ▼
-          ┌────────┐   ┌────────┐  ┌────────────┐
-          │  Tool  │   │  RAG   │  │ Abstention │
-          └───┬────┘   └───┬────┘  └────────────┘
-              │            │
-       ┌──────┴──────┐     ▼
-       │             │  ┌─────────┐
-       ▼             ▼  │ Chroma  │
-   Order Tool   Refund  └─────────┘
-                  Tool
-       │
-       ▼
-    Redis
-
-       Session / Messages
-              │
-              ▼
-        PostgreSQL
-```
-
----
-
-## 3. Technology Stack
-
-### Frontend
-
-* React
-* TypeScript
-* Vite
-* React Markdown
-* Nginx
-
-### Backend
-
-* Python 3.13+
-* FastAPI
-* Uvicorn
-
-### AI
-
-* OpenAI-compatible LLM API
-* Agent Routing
-* Tool Calling
-* RAG
-* FastEmbed
-* `BAAI/bge-small-zh-v1.5`
-* Chroma
-
-### Data
-
-* PostgreSQL 16
-* Redis 8
-
-### Infrastructure
-
-* Docker
 * Docker Compose
-* Nginx
-
-### Development & Testing
-
-* uv
-* pytest
-* Git
 
 ---
 
-## 4. Core Business Scenarios
+## 核心业务场景
 
-当前系统围绕两个典型企业业务场景：
+### 1. 订单查询
 
-### Order Status
+用户：
 
 ```text
-用户：
-查询订单12345
+帮我查询订单12345
+```
 
-        ↓
+Agent 判断需要调用订单工具：
 
+```text
 Agent
-
-        ↓
-
+  ↓
 get_order_status
-
-        ↓
-
-订单状态
+  ↓
+Order Service
+  ↓
+Structured Business Result
+  ↓
+Final Answer
 ```
 
 示例：
@@ -331,199 +77,293 @@ get_order_status
 预计送达日期：2026年9月20日
 ```
 
-### Refund
+---
 
-退款相关请求可以进入：
+### 2. 退款状态查询
 
-* Refund Tool
-* Refund Knowledge Base
-
-例如：
+Agent 根据用户请求调用退款工具：
 
 ```text
-退款审核通过后一般几天可以到账？
+get_refund_status
 ```
 
-系统通过 RAG 查询企业退款政策并生成带知识来源的回答。
+系统返回结构化业务数据，再由 Agent 生成最终回答。
 
 ---
 
-## 5. Multi-turn Conversation
-
-系统支持基于 Session 的多轮对话。
-
-Session 包含：
-
-```text
-session_id
-context
-messages
-```
-
-例如：
-
-```text
-用户：
-查询订单12346
-
-AI：
-订单12346目前正在处理中。
+### 3. 企业知识库问答
 
 用户：
-那退款呢？
 
-AI：
-根据当前订单上下文继续查询订单12346的退款状态。
+```text
+退款审核通过后，一般几天可以到账？
 ```
 
-Session 数据持久化到 PostgreSQL，因此 FastAPI 重启后仍然可以恢复历史会话。
+系统执行：
+
+```text
+User Query
+    ↓
+Embedding
+    ↓
+Chroma Retrieval
+    ↓
+Relevant Knowledge
+    ↓
+LLM Grounded Generation
+    ↓
+Answer + Knowledge Sources
+```
+
+示例：
+
+```text
+根据《退款政策》，退款审核通过后，一般会在
+3—7 个工作日内按原支付方式原路到账。
+若使用信用卡，到账时间可能有所不同。
+```
+
+前端同时展示 Knowledge Sources，帮助用户查看回答依据。
 
 ---
 
-## 6. PostgreSQL Persistence
+### 4. Agent Abstention
 
-PostgreSQL 用于持久化：
-
-```text
-sessions
-messages
-```
-
-数据关系：
+对于系统没有可靠数据的问题，例如：
 
 ```text
-sessions
-    │
-    │ session_id
-    ▼
-messages
+你们公司今年利润是多少？
 ```
 
-核心目标：
+Agent 不会编造答案，而是进入：
 
-* Session 持久化
-* Message 持久化
-* Multi-turn Context
-* 服务重启后恢复会话
+```text
+unknown / abstention
+```
+
+这是项目 Reliability 设计的重要部分。
 
 ---
 
-## 7. Redis Cache
-
-Redis 用于缓存高频业务查询。
-
-当前主要应用于订单查询：
+# 系统架构
 
 ```text
-Order Query
-     ↓
-   Redis
+                         Internet / Browser
+                                │
+                                ▼
+                    ┌─────────────────────┐
+                    │ React Frontend      │
+                    │ + Nginx             │
+                    │ :5174               │
+                    └──────────┬──────────┘
+                               │ /chat
+                               ▼
+                    ┌─────────────────────┐
+                    │ FastAPI Application │
+                    │ :8000               │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Agent               │
+                    │ Decision / Context  │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              ▼                ▼                ▼
+       ┌────────────┐   ┌────────────┐   ┌────────────┐
+       │ Order Tool │   │ Refund     │   │ RAG        │
+       │            │   │ Tool       │   │ Retrieval  │
+       └────────────┘   └────────────┘   └─────┬──────┘
+                                               │
+                                               ▼
+                                         ┌──────────┐
+                                         │ Chroma   │
+                                         └──────────┘
+
+                    ┌────────────────────────────┐
+                    │ PostgreSQL                 │
+                    │ Session / Message Storage  │
+                    └────────────────────────────┘
+
+                    ┌────────────────────────────┐
+                    │ Redis                      │
+                    │ Cache                      │
+                    └────────────────────────────┘
+```
+
+---
+
+# 技术栈
+
+## Backend
+
+| 技术          | 用途                            |
+| ----------- | ----------------------------- |
+| Python 3.13 | Backend runtime               |
+| FastAPI     | REST API                      |
+| Uvicorn     | ASGI server                   |
+| Pydantic    | Request / response validation |
+| uv          | Python dependency management  |
+
+## AI
+
+| 技术                     | 用途                             |
+| ---------------------- | ------------------------------ |
+| LLM API                | Agent reasoning / generation   |
+| Agent                  | Request routing                |
+| Tool Calling           | Business operation execution   |
+| Chroma                 | Vector database                |
+| FastEmbed              | Text embedding                 |
+| BAAI/bge-small-zh-v1.5 | Chinese embedding model        |
+| RAG                    | Enterprise knowledge retrieval |
+
+## Data
+
+| 技术            | 用途                            |
+| ------------- | ----------------------------- |
+| PostgreSQL 16 | Session / message persistence |
+| Redis 8       | Cache                         |
+| Chroma        | Knowledge retrieval           |
+
+## Frontend
+
+| 技术             | 用途                                 |
+| -------------- | ---------------------------------- |
+| React 19       | UI                                 |
+| TypeScript     | Frontend development               |
+| Vite           | Build / development                |
+| React Markdown | Markdown rendering                 |
+| Nginx          | Static serving / API reverse proxy |
+
+## Infrastructure
+
+```text
+Docker
+Docker Compose
+Nginx
+```
+
+---
+
+# Agent Architecture
+
+Agent 不直接承担所有业务逻辑，而是根据请求选择对应能力。
+
+```text
+User Message
      │
- ┌───┴────┐
- │        │
-HIT      MISS
- │        │
- ↓        ▼
-Return   Business Source
-          │
-          ▼
-       Redis SET
-          │
-          ▼
-        Return
+     ▼
+Agent Decision
+     │
+     ├── Order Query
+     │      └── get_order_status
+     │
+     ├── Refund Query
+     │      └── get_refund_status
+     │
+     ├── Knowledge Query
+     │      └── RAG
+     │
+     └── Unsupported / Unknown
+            └── Abstention
 ```
 
-当前订单缓存 TTL：
+核心原则：
 
-```text
-60 seconds
-```
-
-Redis 主要用于：
-
-* 降低重复查询成本
-* 减少业务查询压力
-* 提高高频查询响应速度
-
-同时，Redis 故障不会让整个 Agent 不可用，系统对缓存进行了非关键依赖处理。
+> LLM 负责理解和决策，Python 负责业务执行与系统控制。
 
 ---
 
-## 8. Observability
+# RAG Pipeline
 
-系统加入了基础请求级 Observability。
-
-### Request
+知识库采用向量检索方式：
 
 ```text
-[REQUEST]
-session_id
-message
+Knowledge Documents
+        ↓
+Chunking
+        ↓
+Embedding
+        ↓
+Chroma
+        ↓
+Similarity Search
+        ↓
+Relevant Chunks
+        ↓
+LLM
+        ↓
+Grounded Answer
 ```
 
-### Agent
+RAG 回答同时保留来源信息：
 
-```text
-[AGENT]
-request_type
-needs_knowledge_base
+```json
+{
+  "document_id": "refund_policy",
+  "source": "refund_policy.txt",
+  "distance": 0.5079
+}
 ```
 
-### Tool
+前端可以展开查看 Knowledge Sources。
+
+---
+
+# Context & Session
+
+系统支持基于 `session_id` 的多轮交互。
 
 ```text
-[AGENT]
-tool
-order_id
+Session
+  │
+  ├── Message History
+  │
+  └── Business Context
+       ├── current_order_id
+       └── other session state
 ```
 
-### Cache
+Session 数据通过 PostgreSQL 持久化，Redis 用于缓存。
+
+因此 Agent 不只是单轮：
 
 ```text
-[CACHE]
-HIT
-MISS
-SET
+User → Question → Answer
 ```
 
-### Response
+而能够支持：
 
 ```text
-[RESPONSE]
-session_id
-type
-tool
-latency
-```
-
-例如：
-
-```text
-[REQUEST] session_id=demo message=订单12345现在是什么状态？
-
-[AGENT] decision request_type=order_status
-
-[AGENT] tool=get_order_status order_id=12345
-
-[CACHE] HIT key=order:12345
-
-[RESPONSE] session_id=demo type=tool tool=get_order_status latency=...
+User
+ ↓
+Context
+ ↓
+Agent
+ ↓
+Tool / RAG
+ ↓
+Updated Context
+ ↓
+Next Turn
 ```
 
 ---
 
-## 9. Evaluation
+# Evaluation
 
-Evaluation Dataset 位于：
+项目建立了独立 Evaluation Dataset，对 Agent 行为进行自动化验收。
 
-```text
-evaluation/dataset.json
-```
-
-当前包含：
+当前 Evaluation：
 
 ```text
-24 cases
+Total Cases:       24
+Passed:            24
+Pass Rate:         100%
+RAG Cases:         10
+RAG Grounded:      10 / 10
+Quality Gate:      PASSED
 ```
 
 运行：
@@ -532,204 +372,205 @@ evaluation/dataset.json
 python tests/evaluation/run_eval.py
 ```
 
-当前验收结果：
+Evaluation Dataset：
 
 ```text
-24 / 24 passed
-Pass Rate: 100%
+evaluation/dataset.json
+```
 
-RAG:
-10 / 10 grounded
-Grounding Pass Rate: 100%
+Evaluation Report：
 
-Quality Gate:
-PASSED
+```text
+evaluation/evaluation_report.json
 ```
 
 Evaluation 覆盖：
 
-* Order Tool
-* Refund Tool
-* RAG
-* Unknown Request
-* Contextual Requests
-* Edge Cases
+* Order routing
+* Refund routing
+* RAG retrieval
+* Knowledge grounding
+* Unknown / abstention
+* Context-dependent requests
+* Expected business behavior
 
 ---
 
-## 10. Reliability Testing
+# Reliability Testing
 
-Reliability 测试位于：
+项目进一步增加 Agent Reliability 测试。
 
-```text
-tests/reliability/
-```
-
-覆盖：
-
-```text
-Tool Exceptions
-RAG Exceptions
-Agent Abstention
-Agent Routing
-Redis Failures
-Context Edge Cases
-```
-
-最终测试：
-
-```bash
-uv run pytest -q
-```
-
-结果：
+当前自动化测试：
 
 ```text
 32 passed
 ```
 
----
-
-## 11. Docker
-
-Backend 使用 Docker 容器化。
-
-Dockerfile：
+测试覆盖：
 
 ```text
-Python 3.13
-    +
-uv
-    +
-FastAPI
+tests/reliability/
+├── test_agent_decision.py
+├── test_rag.py
+├── test_rag_agent.py
+└── test_tools.py
 ```
 
-构建：
+重点验证：
+
+* Tool exception
+* Invalid business input
+* Redis failure
+* RAG failure
+* Missing knowledge
+* Irrelevant questions
+* Agent abstention
+* Agent routing
+* Context-dependent behavior
+
+最终目标不是让 Agent “什么都回答”，而是：
+
+> **能正确执行时执行；没有可靠依据时拒答；系统组件异常时保持可控。**
+
+---
+
+# Frontend
+
+Frontend 提供完整 Chat Demo。
+
+主要功能：
+
+* Chat interface
+* New Session
+* Session ID
+* Markdown rendering
+* Loading state
+* Network error handling
+* Tool badge
+* RAG badge
+* Abstention badge
+* Knowledge Sources
+* Source document
+* Retrieval distance
+* Mobile responsive layout
+
+示例：
+
+```text
+┌──────────────────────────────────────────────┐
+│ Enterprise AI Copilot                       │
+├──────────────┬───────────────────────────────┤
+│              │ User                          │
+│ New Session  │ 帮我查询订单12345             │
+│              │                               │
+│ Backend      │ AI                            │
+│ Connected    │ 订单12345当前状态：已发货     │
+│              │                               │
+│ Session ID   │ [Tool] get_order_status       │
+│              │                               │
+│              │ Knowledge Sources              │
+│              │ └─ refund_policy.txt           │
+├──────────────┴───────────────────────────────┤
+│ Ask Enterprise AI...                  Send   │
+└──────────────────────────────────────────────┘
+```
+
+---
+
+# Docker Architecture
+
+整个项目可以通过 Docker Compose 启动：
+
+```text
+docker-compose
+│
+├── frontend
+│   └── React build + Nginx
+│
+├── app
+│   └── FastAPI + Agent
+│
+├── postgres
+│   └── PostgreSQL 16
+│
+└── redis
+    └── Redis 8
+```
+
+服务：
+
+| Service    | Container Port | Host Port |
+| ---------- | -------------: | --------: |
+| Frontend   |             80 |      5174 |
+| FastAPI    |           8000 |      8000 |
+| PostgreSQL |           5432 |      5433 |
+| Redis      |           6379 |      6380 |
+
+Frontend 使用 Nginx 将：
+
+```text
+/chat
+```
+
+反向代理到：
+
+```text
+app:8000
+```
+
+因此浏览器不需要直接访问 Backend Container。
+
+---
+
+# Quick Start
+
+## Requirements
+
+* Docker Desktop
+* Python 3.13+
+* uv
+* Node.js
+* pnpm
+
+## 1. Clone
 
 ```bash
-docker build -t enterprise-ai-copilot-backend .
+git clone https://github.com/fengfirst/enterprise-ai-copilot.git
+
+cd enterprise-ai-copilot
 ```
 
----
+## 2. Configure environment
 
-## 12. Docker Compose
+复制环境变量模板：
 
-完整系统使用 Docker Compose 编排：
-
-```text
-┌────────────────────────────────────────────┐
-│              Docker Compose                │
-│                                            │
-│  ┌──────────────┐      ┌──────────────┐   │
-│  │   Frontend   │      │   Backend    │   │
-│  │ Nginx :5174  │ ───► │ FastAPI :8000│   │
-│  └──────────────┘      └──────┬───────┘   │
-│                               │           │
-│                         ┌─────┴─────┐     │
-│                         ▼           ▼     │
-│                    PostgreSQL     Redis   │
-│                       :5432       :6379   │
-│                                            │
-└────────────────────────────────────────────┘
+```bash
+cp .env.example .env
 ```
 
-当前 Compose 服务：
+填写必要的 API Key。
 
-```text
-frontend
-app
-postgres
-redis
+> `.env` 不提交到 Git。
+
+## 3. Start full stack
+
+```bash
+docker compose up -d --build
 ```
 
-宿主机端口：
-
-```text
-Frontend     5174
-FastAPI      8000
-PostgreSQL   5433
-Redis        6380
-```
-
----
-
-## 13. Health Checks
-
-PostgreSQL：
-
-```text
-pg_isready
-```
-
-Redis：
-
-```text
-redis-cli ping
-```
-
-Compose 会等待 PostgreSQL 和 Redis 进入 healthy 状态后再启动 App。
-
-查看：
+检查：
 
 ```bash
 docker compose ps
 ```
 
----
-
-## 14. Frontend
-
-Frontend 使用：
-
-```text
-React
-TypeScript
-Vite
-React Markdown
-Nginx
-```
-
-当前 UI 支持：
-
-* Chat
-* New Session
-* Session ID
-* Loading State
-* Error State
-* Markdown Response
-* Tool Badge
-* RAG Badge
-* Abstention Badge
-* Knowledge Sources
-* Source Distance
-* Responsive Layout
-
-Frontend production build：
+## 4. Health check
 
 ```bash
-cd frontend
-pnpm build
+curl http://127.0.0.1:8000/health
 ```
 
-Docker 中由 Nginx 提供静态文件，并通过 `/chat` 反向代理到 Backend。
-
----
-
-## 15. API
-
-### Health
-
-```http
-GET /health
-```
-
-Example:
-
-```bash
-curl http://localhost:8000/health
-```
-
-Response:
+Expected:
 
 ```json
 {
@@ -738,28 +579,32 @@ Response:
 }
 ```
 
-### Chat
+## 5. Open frontend
 
-```http
-POST /chat
+```text
+http://127.0.0.1:5174
 ```
 
-Example:
+---
+
+# API Example
+
+请求：
 
 ```bash
-curl -X POST http://localhost:8000/chat \
+curl -X POST http://127.0.0.1:8000/chat \
   -H "Content-Type: application/json" \
   -d '{
-    "session_id": "demo",
-    "message": "订单12345现在是什么状态？"
+    "session_id": "demo-001",
+    "message": "帮我查询订单12345"
   }'
 ```
 
-Response:
+示例响应：
 
 ```json
 {
-  "session_id": "demo",
+  "session_id": "demo-001",
   "type": "tool",
   "answer": "订单 12345 当前状态：已发货",
   "sources": [],
@@ -769,20 +614,27 @@ Response:
 
 ---
 
-## 16. Project Structure
+# Project Structure
 
 ```text
 enterprise-ai-copilot/
 │
 ├── backend/
 │   ├── agent/
+│   │   └── service.py
+│   │
 │   ├── api/
+│   │   └── chat.py
+│   │
 │   ├── cache/
 │   ├── core/
 │   ├── db/
 │   ├── rag/
 │   ├── session/
 │   ├── tools/
+│   │   ├── order.py
+│   │   └── refund.py
+│   │
 │   └── main.py
 │
 ├── frontend/
@@ -791,17 +643,15 @@ enterprise-ai-copilot/
 │   │   ├── App.css
 │   │   └── main.tsx
 │   ├── Dockerfile
-│   ├── nginx.conf
-│   ├── package.json
-│   └── pnpm-lock.yaml
+│   └── nginx.conf
 │
 ├── evaluation/
-│   └── dataset.json
+│   ├── dataset.json
+│   └── evaluation_report.json
 │
 ├── tests/
 │   ├── evaluation/
-│   ├── reliability/
-│   └── ...
+│   └── reliability/
 │
 ├── data/
 │   └── chroma/
@@ -810,269 +660,165 @@ enterprise-ai-copilot/
 ├── docker-compose.yml
 ├── pyproject.toml
 ├── uv.lock
-├── .env.example
-├── .gitignore
 └── README.md
 ```
 
-本地 `data/chroma/` 和前端 `node_modules/`、`dist/` 不提交到 Git。
+---
+
+# Engineering Highlights
+
+## 1. Agent 不只是 Prompt
+
+系统将：
+
+```text
+Intent
+→ Decision
+→ Tool / RAG
+→ Business Result
+→ Final Answer
+```
+
+拆成可测试的工程流程。
 
 ---
 
-## 17. Environment Variables
+## 2. RAG 有质量验收
 
-项目使用环境变量管理 Secrets。
-
-主要配置：
+不是只实现：
 
 ```text
-DATABASE_URL
-REDIS_HOST
-REDIS_PORT
-OPENROUTER_API_KEY
-TYPESAFE_API_KEY
+Vector Search
 ```
 
-本地开发：
-
-```bash
-cp .env.example .env
-```
-
-然后填写实际配置。
-
-**不要把真实 API Key 提交到 Git。**
-
-检查：
-
-```bash
-git check-ignore -v .env
-```
-
-`.env` 已加入 `.gitignore`。
-
----
-
-## 18. Run Locally
-
-### Docker Compose
-
-推荐使用完整 Docker 环境：
-
-```bash
-docker compose up -d --build
-```
-
-查看服务：
-
-```bash
-docker compose ps
-```
-
-查看 Backend：
-
-```bash
-docker compose logs -f app
-```
-
-访问 Frontend：
+而是进一步建立：
 
 ```text
-http://127.0.0.1:5174
+Dataset
+→ Retrieval
+→ Grounding
+→ Evaluation
+→ Quality Gate
 ```
 
-访问 Backend：
-
-```text
-http://127.0.0.1:8000
-```
-
-停止：
-
-```bash
-docker compose down
-```
-
----
-
-## 19. Testing
-
-运行全部测试：
-
-```bash
-uv run pytest -q
-```
-
-当前结果：
-
-```text
-32 passed
-```
-
-运行 Evaluation：
-
-```bash
-python tests/evaluation/run_eval.py
-```
-
-当前结果：
+当前：
 
 ```text
 24 / 24 passed
-Quality Gate: PASSED
-```
-
-Frontend production build：
-
-```bash
-cd frontend
-pnpm build
+10 / 10 RAG grounded
 ```
 
 ---
 
-## 20. Production Readiness
+## 3. Agent 支持 Abstention
 
-当前项目已经完成本地生产化验证：
+当系统缺乏可靠依据时：
 
 ```text
-Backend Docker
-       ↓
-PostgreSQL
-       ↓
-Redis
-       ↓
-Frontend Docker
-       ↓
+Unknown
+```
+
+而不是让 LLM 猜测。
+
+这降低了企业业务场景中的幻觉风险。
+
+---
+
+## 4. Reliability First
+
+系统对：
+
+* Tool errors
+* Cache failures
+* RAG failures
+* Missing knowledge
+* Unsupported questions
+
+都有自动化测试。
+
+当前：
+
+```text
+32 tests passed
+```
+
+---
+
+## 5. Full-stack Delivery
+
+项目不是只有 Backend：
+
+```text
+React
++
 Nginx
-       ↓
-Full-stack Compose
-       ↓
-End-to-end Verification
-```
-
-已经验证：
-
-* Backend container
-* Frontend container
-* PostgreSQL health check
-* Redis health check
-* Nginx reverse proxy
-* Frontend → Backend
-* Agent → Tool
-* Agent → RAG
-* Session persistence
-* Docker Compose full stack
-
-当前状态：
-
-> **Production-oriented local deployment verified.**
-
-公网 Cloud Deployment 尚未作为当前版本的一部分完成。
-
----
-
-## 21. Engineering Validation
-
-项目当前关键指标：
-
-| Area                      |    Result |
-| ------------------------- | --------: |
-| Evaluation Cases          |        24 |
-| Evaluation Pass Rate      |      100% |
-| RAG Grounding             |     10/10 |
-| Quality Gate              |      PASS |
-| Automated Tests           | 32 passed |
-| Frontend Production Build |      PASS |
-| Docker Compose            |      PASS |
-| PostgreSQL Health Check   |      PASS |
-| Redis Health Check        |      PASS |
-| Full-stack E2E            |      PASS |
-
----
-
-## 22. Engineering Highlights
-
-这个项目重点展示的不是某一个 LLM API，而是 AI 应用工程能力：
-
-### AI Application
-
-* Agent Routing
-* Tool Calling
-* RAG
-* Grounded Generation
-* Abstention
-
-### Reliability
-
-* Evaluation Dataset
-* Quality Gate
-* Exception Handling
-* Routing Tests
-* Abstention Tests
-* Context Tests
-
-### Backend Engineering
-
-* FastAPI
-* PostgreSQL
-* Redis
-* Session Persistence
-* Structured Logging
-
-### Frontend Engineering
-
-* React
-* TypeScript
-* Vite
-* Markdown Rendering
-* Agent Observability UI
-* Nginx Reverse Proxy
-
-### Infrastructure
-
-* Docker
-* Docker Compose
-* Health Checks
-* Secrets Management
-* Full-stack Containerization
-
----
-
-## 23. Roadmap
-
-当前项目已经完成：
-
-```text
-RAG / Agent
-      ↓
-Evaluation
-      ↓
-Reliability
-      ↓
-Frontend Demo
-      ↓
-Docker
-      ↓
++
+FastAPI
++
+Agent
++
+RAG
++
+PostgreSQL
++
+Redis
++
 Docker Compose
-      ↓
-Local Production Verification
 ```
 
-后续重点：
+能够作为一个完整应用运行。
+
+---
+
+# Current Status
 
 ```text
-Cloud Deployment
-      ↓
-Public Demo
-      ↓
-GitHub Portfolio
-      ↓
-Resume / Interview
+Phase A  RAG / Agent Quality Acceptance    ✅
+Phase B  Agent Reliability                 ✅
+Phase C  Frontend Demo                     ✅
+D1       Backend Docker                    ✅
+D2       PostgreSQL + Redis                ✅
+D3       Frontend + Nginx                 ✅
+D4       Full-stack Docker                ✅
+D5       Local Deployment                 ✅
+Phase E  GitHub Portfolio                 🚧
+```
+
+当前 GitHub Repository：
+
+```text
+https://github.com/fengfirst/enterprise-ai-copilot
 ```
 
 ---
 
-## License
+# Roadmap
 
-This project is for learning, engineering practice, and portfolio development.
+后续工程方向：
+
+```text
+Phase A
+RAG / Agent Quality
+        ↓
+Phase B
+Agent Reliability
+        ↓
+Phase C
+Frontend Demo
+        ↓
+Phase D
+Docker / Deployment
+        ↓
+Phase E
+GitHub Portfolio
+```
+
+最终目标：
+
+> 从真实业务需求出发，独立完成 AI 系统架构、Agent/RAG、Evaluation、Reliability、Frontend、Docker、Deployment 与 Portfolio 交付。
+
+---
+
+# License
+
+This project is intended for learning, engineering practice, and portfolio demonstration.
