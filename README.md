@@ -273,6 +273,25 @@ Agent Decision
 
 > LLM 负责理解和决策，Python 负责业务执行与系统控制。
 
+## Architecture
+
+```mermaid
+flowchart TD
+    U[User] --> FE[React Frontend + Nginx]
+    FE --> API[FastAPI]
+    API --> AG[Agent]
+
+    AG --> OT[Order Tool]
+    AG --> RT[Refund Tool]
+    AG --> RAG[RAG]
+
+    RAG --> C[Chroma]
+
+    API --> PG[PostgreSQL]
+    API --> REDIS[Redis]
+
+    AG --> LLM[LLM]
+
 ---
 
 # RAG Pipeline
@@ -822,3 +841,17 @@ GitHub Portfolio
 # License
 
 This project is intended for learning, engineering practice, and portfolio demonstration.
+
+## Demo
+
+### Order Tool
+
+![Order Tool](docs/screenshots/order-tool.png)
+
+### RAG & Knowledge Sources
+
+![RAG Grounding](docs/screenshots/rag-grounding.png)
+
+### Agent Abstention
+
+![Agent Abstention](docs/screenshots/abstention.png)
