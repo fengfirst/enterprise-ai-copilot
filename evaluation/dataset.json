@@ -1,0 +1,273 @@
+[
+  {
+    "id": "order_001",
+    "category": "order",
+    "question": "帮我查询订单12345的状态",
+    "expected_answer": "订单12345已经发货。",
+    "required_keywords": [
+      "12345",
+      "已发货"
+    ],
+    "expected_source": "order_tool",
+    "should_answer": true
+  },
+  {
+    "id": "order_002",
+    "category": "order",
+    "question": "订单12346现在是什么状态？",
+    "expected_answer": "订单12346目前处于处理中。",
+    "required_keywords": [
+      "12346",
+      "处理中"
+    ],
+    "expected_source": "order_tool",
+    "should_answer": true
+  },
+  {
+    "id": "order_003",
+    "category": "refund",
+    "question": "订单12347的退款状态是什么？",
+    "expected_answer": "订单12347的退款申请已被拒绝。",
+    "required_keywords": [
+      "12347",
+      "拒绝"
+    ],
+    "expected_source": "refund_tool",
+    "should_answer": true
+  },
+  {
+    "id": "order_004",
+    "category": "order",
+    "question": "帮我查询订单99999",
+    "expected_answer": "系统中没有找到订单99999。",
+    "required_keywords": [
+      "99999",
+      "没有找到"
+    ],
+    "expected_source": "order_tool",
+    "should_answer": true
+  },
+  {
+    "id": "refund_001",
+    "category": "refund",
+    "question": "退款审核通过后，一般几天可以到账？",
+    "expected_answer": "退款审核通过后，一般需要3-7个工作日到账。",
+    "required_keywords": [
+      "审核通过后",
+      "3-7个工作日"
+    ],
+    "expected_source": "refund_policy_2026",
+    "should_answer": true
+  },
+  {
+    "id": "refund_002",
+    "category": "refund",
+    "question": "退款会退回到哪里？",
+    "expected_answer": "退款通常会退回原支付方式。",
+    "required_keywords": [
+      "原支付方式"
+    ],
+    "expected_source": "refund_policy_2026",
+    "should_answer": true
+  },
+  {
+    "id": "refund_003",
+    "category": "refund",
+    "question": "信用卡退款多久到账？",
+    "expected_answer": "信用卡退款通常需要3-7个工作日，具体到账时间可能因银行而有所不同。",
+    "required_keywords": [
+      "3-7个工作日",
+      "信用卡",
+      "到账时间"
+    ],
+    "expected_source": "refund_policy_2026",
+    "should_answer": true
+  },
+  {
+    "id": "refund_004",
+    "category": "refund",
+    "question": "所有商品都支持无理由退款吗？",
+    "expected_answer": "不是，部分特殊商品不支持无理由退款。",
+    "required_keywords": [
+      "特殊商品",
+      "不支持",
+      "无理由退款"
+    ],
+    "expected_source": "refund_policy_2026",
+    "should_answer": true
+  },
+  {
+    "id": "refund_005",
+    "category": "refund",
+    "question": "退款申请提交后马上就能到账吗？",
+    "expected_answer": "不能，退款需要经过审核，审核通过后通常需要3-7个工作日到账。",
+    "required_keywords": [
+      "审核",
+      "3-7个工作日"
+    ],
+    "expected_source": "refund_policy_2026",
+    "should_answer": true
+  },
+  {
+    "id": "knowledge_001",
+    "category": "knowledge",
+    "question": "退款政策规定的到账时间是多少？",
+    "expected_answer": "退款审核通过后，一般需要3-7个工作日到账。",
+    "required_keywords": [
+      "3-7个工作日"
+    ],
+    "expected_source": "refund_policy_2026",
+    "should_answer": true
+  },
+  {
+    "id": "knowledge_002",
+    "category": "knowledge",
+    "question": "哪些商品不支持无理由退款？",
+    "expected_answer": "部分特殊商品不支持无理由退款。",
+    "required_keywords": [
+      "特殊商品",
+      "不支持无理由退款"
+    ],
+    "expected_source": "refund_policy_2026",
+    "should_answer": true
+  },
+  {
+    "id": "knowledge_003",
+    "category": "knowledge",
+    "question": "退货政策是什么？",
+    "expected_answer": "根据企业退货政策，符合条件的商品可以按照退货流程申请退货。",
+    "required_keywords": [
+      "退货",
+      "政策"
+    ],
+    "expected_source": "return_policy_2026",
+    "should_answer": true
+  },
+  {
+    "id": "knowledge_004",
+    "category": "knowledge",
+    "question": "退款审核通过后会使用什么方式退款？",
+    "expected_answer": "退款通常会退回原支付方式。",
+    "required_keywords": [
+      "原支付方式"
+    ],
+    "expected_source": "refund_policy_2026",
+    "should_answer": true
+  },
+  {
+    "id": "knowledge_005",
+    "category": "knowledge",
+    "question": "退款政策中是否提到信用卡到账时间可能不同？",
+    "expected_answer": "是，信用卡退款的具体到账时间可能因银行而有所不同。",
+    "required_keywords": [
+      "信用卡",
+      "到账时间"
+    ],
+    "expected_source": "refund_policy_2026",
+    "should_answer": true
+  },
+  {
+    "id": "unknown_001",
+    "category": "unanswerable",
+    "question": "公司明年会不会涨价？",
+    "expected_answer": null,
+    "required_keywords": [],
+    "expected_source": null,
+    "should_answer": false
+  },
+  {
+    "id": "unknown_002",
+    "category": "unanswerable",
+    "question": "你们公司今年的利润是多少？",
+    "expected_answer": null,
+    "required_keywords": [],
+    "expected_source": null,
+    "should_answer": false
+  },
+  {
+    "id": "unknown_003",
+    "category": "unanswerable",
+    "question": "你们下一季度会推出什么产品？",
+    "expected_answer": null,
+    "required_keywords": [],
+    "expected_source": null,
+    "should_answer": false
+  },
+  {
+    "id": "unknown_004",
+    "category": "unanswerable",
+    "question": "老板今天几点下班？",
+    "expected_answer": null,
+    "required_keywords": [],
+    "expected_source": null,
+    "should_answer": false
+  },
+  {
+    "id": "boundary_001",
+    "category": "boundary",
+    "question": "订单号是ABC123，帮我查一下",
+    "expected_answer": "订单号格式无效或系统中无法找到该订单。",
+    "required_keywords": [
+      "订单"
+    ],
+    "expected_source": null,
+    "should_answer": true
+  },
+  {
+    "id": "boundary_002",
+    "category": "boundary",
+    "question": "帮我查一下订单",
+    "expected_answer": "需要提供具体订单号才能查询订单。",
+    "required_keywords": [
+      "订单号"
+    ],
+    "expected_source": null,
+    "should_answer": true
+  },
+  {
+    "id": "boundary_003",
+    "category": "boundary",
+    "question": "退款",
+    "expected_answer": "需要提供更多信息才能帮助查询退款。",
+    "required_keywords": [
+      "退款"
+    ],
+    "expected_source": null,
+    "should_answer": true
+  },
+  {
+    "id": "multi_001",
+    "category": "multi_turn",
+    "question": "我的订单12346退款了吗？",
+    "expected_answer": "订单12346的退款申请目前仍在审核中。",
+    "required_keywords": [
+      "12346",
+      "审核中"
+    ],
+    "expected_source": "refund_tool",
+    "should_answer": true
+  },
+  {
+    "id": "multi_002",
+    "category": "multi_turn",
+    "question": "那大概什么时候能到账？",
+    "expected_answer": "如果退款审核已经通过，通常需要3-7个工作日到账。",
+    "required_keywords": [
+      "3-7个工作日"
+    ],
+    "expected_source": "refund_policy_2026",
+    "should_answer": true
+  },
+  {
+    "id": "multi_003",
+    "category": "multi_turn",
+    "question": "还是刚才那个订单，它现在可以退款吗？",
+    "expected_answer": "需要结合当前订单状态和退款政策判断是否可以退款。",
+    "required_keywords": [
+      "订单",
+      "退款"
+    ],
+    "expected_source": null,
+    "should_answer": true
+  }
+]

@@ -1,0 +1,1144 @@
+{
+  "total": 24,
+  "passed": 9,
+  "failed": 15,
+  "pass_rate": 0.375,
+  "quality_gate": false,
+  "grounding": {
+    "checked": 9,
+    "grounded": 2,
+    "not_grounded": 7
+  },
+  "results": [
+    {
+      "id": "order_001",
+      "category": "order",
+      "question": "帮我查询订单12345的状态",
+      "expected_answer": "订单12345已经发货。",
+      "answer": "订单 **12345** 当前状态为 **已发货**，预计送达日期为 **2026年9月20日**。",
+      "required_keywords": [
+        "12345",
+        "已发货"
+      ],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": "order_tool",
+      "actual_sources": [
+        "get_order_status"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "get_order_status",
+        "actual": [
+          "get_order_status"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "order_status",
+          "needs_knowledge_base": 0.21
+        },
+        "tool": {
+          "name": "get_order_status",
+          "success": true,
+          "order_id": "12345"
+        },
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": true
+    },
+    {
+      "id": "order_002",
+      "category": "order",
+      "question": "订单12346现在是什么状态？",
+      "expected_answer": "订单12346目前处于处理中。",
+      "answer": "订单 **12346** 当前状态为 **处理中**，预计送达日期是 **2026年9月23日**。",
+      "required_keywords": [
+        "12346",
+        "处理中"
+      ],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": "order_tool",
+      "actual_sources": [
+        "get_order_status"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "get_order_status",
+        "actual": [
+          "get_order_status"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "order_status",
+          "needs_knowledge_base": 0.25
+        },
+        "tool": {
+          "name": "get_order_status",
+          "success": true,
+          "order_id": "12346"
+        },
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": true
+    },
+    {
+      "id": "order_003",
+      "category": "refund",
+      "question": "订单12347的退款状态是什么？",
+      "expected_answer": "订单12347的退款申请已被拒绝。",
+      "answer": "订单12347的退款状态为：**已拒绝（rejected）**。",
+      "required_keywords": [
+        "12347",
+        "拒绝"
+      ],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": "refund_tool",
+      "actual_sources": [
+        "get_refund_status"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "get_refund_status",
+        "actual": [
+          "get_refund_status"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "refund_status",
+          "needs_knowledge_base": 0.36
+        },
+        "tool": {
+          "name": "get_refund_status",
+          "success": true,
+          "order_id": "12347"
+        },
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": true
+    },
+    {
+      "id": "order_004",
+      "category": "order",
+      "question": "帮我查询订单99999",
+      "expected_answer": "系统中没有找到订单99999。",
+      "answer": "订单 99999 不存在",
+      "required_keywords": [
+        "99999",
+        "没有找到"
+      ],
+      "keyword_check": {
+        "passed": false,
+        "missing": [
+          "没有找到"
+        ]
+      },
+      "expected_source": "order_tool",
+      "actual_sources": [
+        "get_order_status"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "get_order_status",
+        "actual": [
+          "get_order_status"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": "tool_not_found",
+      "trace": {
+        "decision": {
+          "request_type": "order_status",
+          "needs_knowledge_base": 0.25
+        },
+        "tool": {
+          "name": "get_order_status",
+          "success": false,
+          "order_id": "99999"
+        },
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": false
+    },
+    {
+      "id": "refund_001",
+      "category": "refund",
+      "question": "退款审核通过后，一般几天可以到账？",
+      "expected_answer": "退款审核通过后，一般需要3-7个工作日到账。",
+      "answer": "退款审核通过后，一般会在 **3—7个工作日内到账**，并通过原支付方式原路退回。若使用信用卡，到账时间可能有所不同。",
+      "required_keywords": [
+        "审核通过后",
+        "3-7个工作日"
+      ],
+      "keyword_check": {
+        "passed": false,
+        "missing": [
+          "3-7个工作日"
+        ]
+      },
+      "expected_source": "refund_policy_2026",
+      "actual_sources": [
+        "refund_policy_2026",
+        "return_policy_2026"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "refund_policy_2026",
+        "actual": [
+          "refund_policy_2026",
+          "return_policy_2026"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "knowledge",
+          "needs_knowledge_base": 0.78
+        },
+        "tool": null,
+        "retrieval": {
+          "found": true,
+          "count": 2,
+          "sources": [
+            {
+              "document_id": "refund_policy",
+              "source": "refund_policy.txt",
+              "distance": 0.519912838935852
+            },
+            {
+              "document_id": "return_policy",
+              "source": "return_policy.txt",
+              "distance": 0.6440097093582153
+            }
+          ]
+        }
+      },
+      "grounding": {
+        "grounded": false,
+        "missing_in_evidence": [],
+        "missing_in_answer": [
+          "3-7个工作日"
+        ]
+      },
+      "passed": false
+    },
+    {
+      "id": "refund_002",
+      "category": "refund",
+      "question": "退款会退回到哪里？",
+      "expected_answer": "退款通常会退回原支付方式。",
+      "answer": "审核通过后，退款会按原支付方式原路退回：\n\n- 支付宝：退回原支付宝账户\n- 信用卡：退回原支付银行卡\n\n一般需 **3–7个工作日**到账，信用卡到账时间可能有所不同。",
+      "required_keywords": [
+        "原支付方式"
+      ],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": "refund_policy_2026",
+      "actual_sources": [
+        "refund_policy_2026"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "refund_policy_2026",
+        "actual": [
+          "refund_policy_2026"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "knowledge",
+          "needs_knowledge_base": 0.79
+        },
+        "tool": null,
+        "retrieval": {
+          "found": true,
+          "count": 1,
+          "sources": [
+            {
+              "document_id": "refund_policy",
+              "source": "refund_policy.txt",
+              "distance": 0.6795175075531006
+            }
+          ]
+        }
+      },
+      "grounding": {
+        "grounded": true,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": true
+    },
+    {
+      "id": "refund_003",
+      "category": "refund",
+      "question": "信用卡退款多久到账？",
+      "expected_answer": "信用卡退款通常需要3-7个工作日，具体到账时间可能因银行而有所不同。",
+      "answer": "提交退款申请并审核通过后，退款会按原支付方式退回。一般需 **3—7个工作日**到账；信用卡到账时间可能有所不同，目前无法确认更具体的时间。",
+      "required_keywords": [
+        "3-7个工作日",
+        "银行"
+      ],
+      "keyword_check": {
+        "passed": false,
+        "missing": [
+          "3-7个工作日",
+          "银行"
+        ]
+      },
+      "expected_source": "refund_policy_2026",
+      "actual_sources": [
+        "refund_policy_2026"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "refund_policy_2026",
+        "actual": [
+          "refund_policy_2026"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "knowledge",
+          "needs_knowledge_base": 0.61
+        },
+        "tool": null,
+        "retrieval": {
+          "found": true,
+          "count": 1,
+          "sources": [
+            {
+              "document_id": "refund_policy",
+              "source": "refund_policy.txt",
+              "distance": 0.4346349239349365
+            }
+          ]
+        }
+      },
+      "grounding": {
+        "grounded": false,
+        "missing_in_evidence": [
+          "银行"
+        ],
+        "missing_in_answer": [
+          "3-7个工作日",
+          "银行"
+        ]
+      },
+      "passed": false
+    },
+    {
+      "id": "refund_004",
+      "category": "refund",
+      "question": "所有商品都支持无理由退款吗？",
+      "expected_answer": "不是，部分特殊商品不支持无理由退款。",
+      "answer": "不是所有商品都支持无理由退货。部分特殊商品不支持7天无理由退货；普通商品需在签收后7天内申请，并保持商品完整，审核通过后按系统提示寄回。",
+      "required_keywords": [
+        "特殊商品",
+        "不支持",
+        "无理由退款"
+      ],
+      "keyword_check": {
+        "passed": false,
+        "missing": [
+          "无理由退款"
+        ]
+      },
+      "expected_source": "refund_policy_2026",
+      "actual_sources": [
+        "return_policy_2026"
+      ],
+      "source_check": {
+        "passed": false,
+        "expected": "refund_policy_2026",
+        "actual": [
+          "return_policy_2026"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "knowledge",
+          "needs_knowledge_base": 0.93
+        },
+        "tool": null,
+        "retrieval": {
+          "found": true,
+          "count": 1,
+          "sources": [
+            {
+              "document_id": "return_policy",
+              "source": "return_policy.txt",
+              "distance": 0.7270073294639587
+            }
+          ]
+        }
+      },
+      "grounding": {
+        "grounded": false,
+        "missing_in_evidence": [
+          "无理由退款"
+        ],
+        "missing_in_answer": [
+          "无理由退款"
+        ]
+      },
+      "passed": false
+    },
+    {
+      "id": "refund_005",
+      "category": "refund",
+      "question": "退款申请提交后马上就能到账吗？",
+      "expected_answer": "不能，退款需要经过审核，审核通过后通常需要3-7个工作日到账。",
+      "answer": "不是马上到账。退款申请提交后需要经过系统审核，审核通过后会按原支付方式退回。一般情况下，支付宝退款会在 **3—7个工作日**内到账；信用卡到账时间可能有所不同。",
+      "required_keywords": [
+        "审核",
+        "3-7个工作日"
+      ],
+      "keyword_check": {
+        "passed": false,
+        "missing": [
+          "3-7个工作日"
+        ]
+      },
+      "expected_source": "refund_policy_2026",
+      "actual_sources": [
+        "refund_policy_2026",
+        "return_policy_2026"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "refund_policy_2026",
+        "actual": [
+          "refund_policy_2026",
+          "return_policy_2026"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "knowledge",
+          "needs_knowledge_base": 0.82
+        },
+        "tool": null,
+        "retrieval": {
+          "found": true,
+          "count": 2,
+          "sources": [
+            {
+              "document_id": "refund_policy",
+              "source": "refund_policy.txt",
+              "distance": 0.5604414939880371
+            },
+            {
+              "document_id": "return_policy",
+              "source": "return_policy.txt",
+              "distance": 0.7302086353302002
+            }
+          ]
+        }
+      },
+      "grounding": {
+        "grounded": false,
+        "missing_in_evidence": [],
+        "missing_in_answer": [
+          "3-7个工作日"
+        ]
+      },
+      "passed": false
+    },
+    {
+      "id": "knowledge_001",
+      "category": "knowledge",
+      "question": "退款政策规定的到账时间是多少？",
+      "expected_answer": "退款审核通过后，一般需要3-7个工作日到账。",
+      "answer": "退款申请审核通过后，将按原支付方式退回：\n\n- **一般情况：3—7个工作日到账**\n- **支付宝：通常3—7个工作日到账**\n- **信用卡：到账时间可能有所不同，具体以发卡行处理时间为准。",
+      "required_keywords": [
+        "3-7个工作日"
+      ],
+      "keyword_check": {
+        "passed": false,
+        "missing": [
+          "3-7个工作日"
+        ]
+      },
+      "expected_source": "refund_policy_2026",
+      "actual_sources": [
+        "refund_policy_2026"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "refund_policy_2026",
+        "actual": [
+          "refund_policy_2026"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "knowledge",
+          "needs_knowledge_base": 0.95
+        },
+        "tool": null,
+        "retrieval": {
+          "found": true,
+          "count": 1,
+          "sources": [
+            {
+              "document_id": "refund_policy",
+              "source": "refund_policy.txt",
+              "distance": 0.44833123683929443
+            }
+          ]
+        }
+      },
+      "grounding": {
+        "grounded": false,
+        "missing_in_evidence": [],
+        "missing_in_answer": [
+          "3-7个工作日"
+        ]
+      },
+      "passed": false
+    },
+    {
+      "id": "knowledge_002",
+      "category": "knowledge",
+      "question": "哪些商品不支持无理由退款？",
+      "expected_answer": "部分特殊商品不支持无理由退款。",
+      "answer": "知识库仅说明“部分特殊商品不支持7天无理由退货”，但未列明具体商品，因此目前无法确认哪些商品不支持。",
+      "required_keywords": [
+        "特殊商品",
+        "不支持无理由退款"
+      ],
+      "keyword_check": {
+        "passed": false,
+        "missing": [
+          "不支持无理由退款"
+        ]
+      },
+      "expected_source": "refund_policy_2026",
+      "actual_sources": [
+        "return_policy_2026"
+      ],
+      "source_check": {
+        "passed": false,
+        "expected": "refund_policy_2026",
+        "actual": [
+          "return_policy_2026"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "knowledge",
+          "needs_knowledge_base": 0.77
+        },
+        "tool": null,
+        "retrieval": {
+          "found": true,
+          "count": 1,
+          "sources": [
+            {
+              "document_id": "return_policy",
+              "source": "return_policy.txt",
+              "distance": 0.71236252784729
+            }
+          ]
+        }
+      },
+      "grounding": {
+        "grounded": false,
+        "missing_in_evidence": [
+          "不支持无理由退款"
+        ],
+        "missing_in_answer": [
+          "不支持无理由退款"
+        ]
+      },
+      "passed": false
+    },
+    {
+      "id": "knowledge_003",
+      "category": "knowledge",
+      "question": "退货政策是什么？",
+      "expected_answer": "根据企业退货政策，符合条件的商品可以按照退货流程申请退货。",
+      "answer": "抱歉，当前知识库和业务系统中没有找到足够的信息来回答这个问题。",
+      "required_keywords": [
+        "退货",
+        "政策"
+      ],
+      "keyword_check": {
+        "passed": false,
+        "missing": [
+          "退货",
+          "政策"
+        ]
+      },
+      "expected_source": "return_policy_2026",
+      "actual_sources": [],
+      "source_check": {
+        "passed": false,
+        "expected": "return_policy_2026",
+        "actual": []
+      },
+      "should_answer": true,
+      "abstention_reason": "knowledge_not_found",
+      "trace": {
+        "decision": {
+          "request_type": "knowledge",
+          "needs_knowledge_base": 0.93
+        },
+        "tool": null,
+        "retrieval": {
+          "found": false,
+          "count": 0,
+          "sources": []
+        }
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": false
+    },
+    {
+      "id": "knowledge_004",
+      "category": "knowledge",
+      "question": "退款审核通过后会使用什么方式退款？",
+      "expected_answer": "退款通常会退回原支付方式。",
+      "answer": "退款审核通过后，会按照原支付方式原路退回：\n\n- 信用卡：退回原信用卡，具体到账时间可能不同。\n- 支付宝：退回原支付宝账户，一般在 **3—7个工作日**内到账。",
+      "required_keywords": [
+        "原支付方式"
+      ],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": "refund_policy_2026",
+      "actual_sources": [
+        "refund_policy_2026"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "refund_policy_2026",
+        "actual": [
+          "refund_policy_2026"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "knowledge",
+          "needs_knowledge_base": 0.87
+        },
+        "tool": null,
+        "retrieval": {
+          "found": true,
+          "count": 1,
+          "sources": [
+            {
+              "document_id": "refund_policy",
+              "source": "refund_policy.txt",
+              "distance": 0.5633578300476074
+            }
+          ]
+        }
+      },
+      "grounding": {
+        "grounded": true,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": true
+    },
+    {
+      "id": "knowledge_005",
+      "category": "knowledge",
+      "question": "退款政策中是否提到信用卡到账时间可能不同？",
+      "expected_answer": "是，信用卡退款的具体到账时间可能因银行而有所不同。",
+      "answer": "是的。退款政策提到：如果使用信用卡支付，退款到账时间可能有所不同；一般退款到账时间为3–7个工作日。",
+      "required_keywords": [
+        "信用卡",
+        "银行",
+        "到账时间"
+      ],
+      "keyword_check": {
+        "passed": false,
+        "missing": [
+          "银行"
+        ]
+      },
+      "expected_source": "refund_policy_2026",
+      "actual_sources": [
+        "refund_policy_2026"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "refund_policy_2026",
+        "actual": [
+          "refund_policy_2026"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "knowledge",
+          "needs_knowledge_base": 0.91
+        },
+        "tool": null,
+        "retrieval": {
+          "found": true,
+          "count": 1,
+          "sources": [
+            {
+              "document_id": "refund_policy",
+              "source": "refund_policy.txt",
+              "distance": 0.488640159368515
+            }
+          ]
+        }
+      },
+      "grounding": {
+        "grounded": false,
+        "missing_in_evidence": [
+          "银行"
+        ],
+        "missing_in_answer": [
+          "银行"
+        ]
+      },
+      "passed": false
+    },
+    {
+      "id": "unknown_001",
+      "category": "unanswerable",
+      "question": "公司明年会不会涨价？",
+      "expected_answer": null,
+      "answer": "抱歉，当前知识库和业务系统中没有找到足够的信息来回答这个问题。",
+      "required_keywords": [],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": null,
+      "actual_sources": [],
+      "source_check": {
+        "passed": true,
+        "expected": null,
+        "actual": []
+      },
+      "should_answer": false,
+      "abstention_reason": "knowledge_not_found",
+      "trace": {
+        "decision": {
+          "request_type": "knowledge",
+          "needs_knowledge_base": 0.82
+        },
+        "tool": null,
+        "retrieval": {
+          "found": false,
+          "count": 0,
+          "sources": []
+        }
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": true
+    },
+    {
+      "id": "unknown_002",
+      "category": "unanswerable",
+      "question": "你们公司今年的利润是多少？",
+      "expected_answer": null,
+      "answer": "抱歉，当前知识库和业务系统中没有找到足够的信息来回答这个问题。",
+      "required_keywords": [],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": null,
+      "actual_sources": [],
+      "source_check": {
+        "passed": true,
+        "expected": null,
+        "actual": []
+      },
+      "should_answer": false,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "unknown",
+          "needs_knowledge_base": 0.53
+        },
+        "tool": null,
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": false
+    },
+    {
+      "id": "unknown_003",
+      "category": "unanswerable",
+      "question": "你们下一季度会推出什么产品？",
+      "expected_answer": null,
+      "answer": "抱歉，当前知识库和业务系统中没有找到足够的信息来回答这个问题。",
+      "required_keywords": [],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": null,
+      "actual_sources": [],
+      "source_check": {
+        "passed": true,
+        "expected": null,
+        "actual": []
+      },
+      "should_answer": false,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "unknown",
+          "needs_knowledge_base": 0.79
+        },
+        "tool": null,
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": false
+    },
+    {
+      "id": "unknown_004",
+      "category": "unanswerable",
+      "question": "老板今天几点下班？",
+      "expected_answer": null,
+      "answer": "抱歉，当前知识库和业务系统中没有找到足够的信息来回答这个问题。",
+      "required_keywords": [],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": null,
+      "actual_sources": [],
+      "source_check": {
+        "passed": true,
+        "expected": null,
+        "actual": []
+      },
+      "should_answer": false,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "unknown",
+          "needs_knowledge_base": 0.33
+        },
+        "tool": null,
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": false
+    },
+    {
+      "id": "boundary_001",
+      "category": "boundary",
+      "question": "订单号是ABC123，帮我查一下",
+      "expected_answer": "订单号格式无效或系统中无法找到该订单。",
+      "answer": "请提供需要查询的订单号。",
+      "required_keywords": [
+        "订单"
+      ],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": "order_tool",
+      "actual_sources": [],
+      "source_check": {
+        "passed": false,
+        "expected": "get_order_status",
+        "actual": []
+      },
+      "should_answer": true,
+      "abstention_reason": "missing_input",
+      "trace": {
+        "decision": {
+          "request_type": "order_status",
+          "needs_knowledge_base": 0.26
+        },
+        "tool": null,
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": false
+    },
+    {
+      "id": "boundary_002",
+      "category": "boundary",
+      "question": "帮我查一下订单",
+      "expected_answer": "需要提供具体订单号才能查询订单。",
+      "answer": "请提供需要查询的订单号。",
+      "required_keywords": [
+        "订单号"
+      ],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": null,
+      "actual_sources": [],
+      "source_check": {
+        "passed": true,
+        "expected": null,
+        "actual": []
+      },
+      "should_answer": true,
+      "abstention_reason": "missing_input",
+      "trace": {
+        "decision": {
+          "request_type": "order_status",
+          "needs_knowledge_base": 0.22
+        },
+        "tool": null,
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": true
+    },
+    {
+      "id": "boundary_003",
+      "category": "boundary",
+      "question": "退款",
+      "expected_answer": "需要提供更多信息才能帮助查询退款。",
+      "answer": "请提供需要查询退款状态的订单号。",
+      "required_keywords": [
+        "退款"
+      ],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": null,
+      "actual_sources": [],
+      "source_check": {
+        "passed": true,
+        "expected": null,
+        "actual": []
+      },
+      "should_answer": true,
+      "abstention_reason": "missing_input",
+      "trace": {
+        "decision": {
+          "request_type": "refund_status",
+          "needs_knowledge_base": 0.78
+        },
+        "tool": null,
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": true
+    },
+    {
+      "id": "multi_001",
+      "category": "multi_turn",
+      "question": "我的订单12346退款了吗？",
+      "expected_answer": "订单12346的退款申请目前仍在审核中。",
+      "answer": "订单 **12346** 的退款目前仍处于**待处理（pending）**状态，尚未确认到账。退款金额为 **199元**，预计到账时间暂未提供。",
+      "required_keywords": [
+        "12346",
+        "审核中"
+      ],
+      "keyword_check": {
+        "passed": false,
+        "missing": [
+          "审核中"
+        ]
+      },
+      "expected_source": "refund_tool",
+      "actual_sources": [
+        "get_refund_status"
+      ],
+      "source_check": {
+        "passed": true,
+        "expected": "get_refund_status",
+        "actual": [
+          "get_refund_status"
+        ]
+      },
+      "should_answer": true,
+      "abstention_reason": null,
+      "trace": {
+        "decision": {
+          "request_type": "refund_status",
+          "needs_knowledge_base": 0.33
+        },
+        "tool": {
+          "name": "get_refund_status",
+          "success": true,
+          "order_id": "12346"
+        },
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": false
+    },
+    {
+      "id": "multi_002",
+      "category": "multi_turn",
+      "question": "那大概什么时候能到账？",
+      "expected_answer": "如果退款审核已经通过，通常需要3-7个工作日到账。",
+      "answer": "请提供需要查询退款状态的订单号。",
+      "required_keywords": [
+        "3-7个工作日"
+      ],
+      "keyword_check": {
+        "passed": false,
+        "missing": [
+          "3-7个工作日"
+        ]
+      },
+      "expected_source": "refund_policy_2026",
+      "actual_sources": [],
+      "source_check": {
+        "passed": false,
+        "expected": "refund_policy_2026",
+        "actual": []
+      },
+      "should_answer": true,
+      "abstention_reason": "missing_input",
+      "trace": {
+        "decision": {
+          "request_type": "refund_status",
+          "needs_knowledge_base": 0.78
+        },
+        "tool": null,
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": false
+    },
+    {
+      "id": "multi_003",
+      "category": "multi_turn",
+      "question": "还是刚才那个订单，它现在可以退款吗？",
+      "expected_answer": "需要结合当前订单状态和退款政策判断是否可以退款。",
+      "answer": "请提供需要查询退款状态的订单号。",
+      "required_keywords": [
+        "订单",
+        "退款"
+      ],
+      "keyword_check": {
+        "passed": true,
+        "missing": []
+      },
+      "expected_source": null,
+      "actual_sources": [],
+      "source_check": {
+        "passed": true,
+        "expected": null,
+        "actual": []
+      },
+      "should_answer": true,
+      "abstention_reason": "missing_input",
+      "trace": {
+        "decision": {
+          "request_type": "refund_status",
+          "needs_knowledge_base": 0.78
+        },
+        "tool": null,
+        "retrieval": null
+      },
+      "grounding": {
+        "grounded": null,
+        "missing_in_evidence": [],
+        "missing_in_answer": []
+      },
+      "passed": true
+    }
+  ]
+}

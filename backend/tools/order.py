@@ -28,7 +28,15 @@ def get_order_status(order_id: str) -> dict:
     cache_key = f"order:{order_id}"
 
     # 1. Cache Hit
-    cached = cache.get(cache_key)
+    # cached = cache.get(cache_key)
+    try:
+        cached = cache.get(cache_key)
+    except Exception:
+        logger.exception(
+            "[CACHE] GET failed key=%s",
+            cache_key,
+        )
+        cached = None
 
     if cached is not None:
         logger.info(
@@ -48,7 +56,8 @@ def get_order_status(order_id: str) -> dict:
     if order is None:
         return {
             "success": False,
-            "error": f"订单 {order_id} 不存在",
+            # "error": f"订单 {order_id} 不存在",
+            "error": f"系统中没有找到订单{order_id}。",
         }
 
     result = {
@@ -57,11 +66,22 @@ def get_order_status(order_id: str) -> dict:
     }
 
     # 3. 写入 Redis，缓存 60 秒
-    cache.set(
-        cache_key,
-        json.dumps(result, ensure_ascii=False),
-        ttl=60,
-    )
+    # cache.set(
+    #     cache_key,
+    #     json.dumps(result, ensure_ascii=False),
+    #     ttl=60,
+    # )
+    try:
+        cache.set(
+            cache_key,
+            json.dumps(result, ensure_ascii=False),
+            ttl=60,
+        )
+    except Exception:
+        logger.exception(
+            "[CACHE] SET failed key=%s",
+            cache_key,
+        )
 
     logger.info(
         "[CACHE] SET key=%s ttl=60",

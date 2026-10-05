@@ -13,6 +13,7 @@ client = OpenAI(
 # 优先尝试这些模型。
 # 如果当前不可用，会自动从 OpenRouter 模型列表中寻找其他免费模型。
 PREFERRED_FREE_MODELS = [
+    "stealth/space-bunny-alpha",
     "nex-agi/nex-n2.5-mini:free",
     "openai/gpt-oss-20b:free",
     "meta-llama/llama-3.3-8b-instruct:free",

@@ -49,6 +49,16 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: enterprise-ai-copilot-frontend
+    ports:
+      - "5174:80"
+    depends_on:
+      - app
 
 volumes:
   postgres_data:

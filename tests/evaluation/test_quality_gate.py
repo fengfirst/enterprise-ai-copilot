@@ -15,12 +15,25 @@ class TestQualityGate(unittest.TestCase):
             temp_path = Path(temp_dir)
             dataset_path = temp_path / "dataset.json"
 
+            # dataset = [
+            #     {
+            #         "id": "failure_test",
+            #         "message": "测试问题",
+            #         "expected_type": "rag",
+            #         "required_keywords": ["必须出现但实际不会出现的内容"],
+            #     }
+            # ]
             dataset = [
                 {
                     "id": "failure_test",
-                    "message": "测试问题",
-                    "expected_type": "rag",
-                    "required_keywords": ["必须出现但实际不会出现的内容"],
+                    "question": "测试问题",
+                    "category": "knowledge",
+                    "expected_answer": "模拟答案",
+                    "should_answer": True,
+                    "required_keywords": [
+                        "必须出现但实际不会出现的内容"
+                    ],
+                    "expected_source": None,
                 }
             ]
 
